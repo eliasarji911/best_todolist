@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+    <h1 id="greating"></h1>
+    <a href="/cat">All categories</a>
+    <hr>
+    <div>
+        <input id="id" type="hidden">
+        <label for="text">Text:</label>
+        <input id="text">
+        <button onclick="addOrEdit()">Send</button>
+    </div>
+    <hr>
+    <select onchange="sortTable()" id="mySelect"></select>
+    <table border="1">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Text</th>
+                <th>Category</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="myTable"></tbody>
+    </table>
+    <script src="../scripts/script.js"></script>
+</body>
+</html>
