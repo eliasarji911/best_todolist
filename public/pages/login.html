@@ -1,21 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <title>Login</title>
 </head>
 <body>
-    <h1>Login</h1>
-    <label for="userName">User Name:</label>
-    <input type="text" id="userName">
-    <br>
-    <label for="pass">Password:</label>
-    <input type="password" id="pass">
-    <br>
-    <button onclick="login()">Send</button>
-    <br>
-    <a href="/reg">אינך רשום? להרשמה לחץ כאן</a>
-    <script src="../scripts/login_script.js"></script>
+  <h1>Login</h1>
+
+  <input id="userName" placeholder="Username" />
+  <input id="pass" placeholder="Password" type="password" />
+  <button onclick="login()">Login</button>
+
+  <p id="msg"></p>
+
+  <script>
+    async function login() {
+      const userName = document.getElementById("userName").value;
+      const pass = document.getElementById("pass").value;
+
+      const res = await fetch("/auth/login", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ userName, pass })
+      });
+
+      const data = await res.json();
+      document.getElementById("msg").innerText = data.msg;
+
+      if (res.ok) location.href = "/cat";
+    }
+  </script>
 </body>
 </html>

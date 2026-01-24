@@ -1,56 +1,107 @@
-const {getAll,getOne,remove,update} = require('../model/users_M.js');
+const db = require("../config/db_config");
 
-async function getAllUsers(req,res) {
-    try{
-        let users = await getAll();
-        if(users.length == 0){
-            return res.status(400).json({message:"אין נתונים"})
-        }
-        res.status(200).json(users)
-    }catch(err){
-        res.status(500).json({message:"Server error"})
+// ✅ GET /users  (protected by isLoggedIn in your routes)
+const getAllUsers = (req, res) => {
+  const sql = "SELECT id, name, email, userName, created_at FROM users";
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      return res.status(500).json({
+        msg: "❌ DB error in getAllUsers",
+        err: err.message,
+      });
     }
-}
 
-async function getOneUser(req,res) {
-    try{
-        let user = await getOne(req.id);
-        if(!user){
-            return res.status(400).json({message:`User ${req.id} not found!`})
-        }
-        res.status(200).json(user);
-    }catch(err){
-        res.status(500).json({message:"Server error"})
+    return res.json(rows);
+  });
+};
+
+// ✅ GET /users/:id
+const getOneUser = (req, res) => {
+  const { id } = req.params;
+
+  const sql = "SELECT id, name, email, userName, created_at FROM users WHERE id = ?";
+
+  db.query(sql, [id], (err, rows) => {
+    if (err) {
+      return res.status(500).json({
+        msg: "❌ DB error in getOneUser",
+        err: err.message,
+      });
     }
-}
 
-async function deleteUser(req,res) {
-    try{
-        let affectedRows = await remove(req.id);
-        if(!affectedRows){
-            return res.status(400).json({message:`User ${req.id} not found!`})
-        }
-        res.status(200).json({message:"deleted!"});
-    }catch(err){
-        res.status(500).json({message:"Server error"})
+    if (rows.length === 0) {
+      return res.status(404).json({ msg: "❌ User not found" });
     }
-}
 
-async function updateUser(req,res) {
-    try{
-        let affectedRows = await update(req.id,req.user);
-        if(!affectedRows){
-            return res.status(400).json({message:`User ${req.id} not found!`})
-        }
-        res.status(200).json({message:"updated!"});
-    }catch(err){
-        res.status(500).json({message:"Server error"})
+    return res.json(rows[0]);
+  });
+};
+
+// ✅ DELETE /users/:id
+const deleteUser = (req, res) => {
+  const { id } = req.params;
+
+  const sql = "DELETE FROM users WHERE id = ?";
+
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        msg: "❌ DB error in deleteUser",
+        err: err.message,
+      });
     }
-}
 
-module.exports={
-    getAllUsers,
-    getOneUser,
-    deleteUser,
-    updateUser
-}
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ msg: "❌ User not found" });
+    }
+
+    return res.json({ msg: "✅ User deleted successfully" });
+  });
+};
+
+// ✅ PATCH /users/:id
+const updateUser = (req, res) => {
+  const { id } = req.params;
+
+  // valuesToEdit middleware should already filter allowed fields
+  const allowedFields = ["name", "email", "userName"];
+  const updates = [];
+  const values = [];
+
+  for (const key of allowedFields) {
+    if (req.body[key] !== undefined) {
+      updates.push(`${key} = ?`);
+      values.push(req.body[key]);
+    }
+  }
+
+  if (updates.length === 0) {
+    return res.status(400).json({ msg: "❌ No values to update" });
+  }
+
+  const sql = `UPDATE users SET ${updates.join(", ")} WHERE id = ?`;
+  values.push(id);
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        msg: "❌ DB error in updateUser",
+        err: err.message,
+      });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ msg: "❌ User not found" });
+    }
+
+    return res.json({ msg: "✅ User updated successfully" });
+  });
+};
+
+module.exports = {
+  getAllUsers,
+  getOneUser,
+  deleteUser,
+  updateUser,
+};

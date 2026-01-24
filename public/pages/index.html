@@ -1,35 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../styles/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Todo List</title>
+  <link rel="stylesheet" href="../styles/styles.css" />
 </head>
+
 <body>
-    <h1 id="greating"></h1>
-    <a href="/cat">All categories</a>
-    <hr>
-    <div>
-        <input id="id" type="hidden">
-        <label for="text">Text:</label>
-        <input id="text">
-        <button onclick="addOrEdit()">Send</button>
-    </div>
-    <hr>
-    <select onchange="sortTable()" id="mySelect"></select>
-    <table border="1">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Text</th>
-                <th>Category</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody id="myTable"></tbody>
-    </table>
-    <script src="../scripts/script.js"></script>
+  <h1 id="greating">My Tasks</h1>
+
+  <a href="/cat">All categories</a>
+  <hr />
+
+  <!-- Add / Edit -->
+  <div>
+    <input id="id" type="hidden" />
+
+    <label for="text">Text:</label>
+    <input id="text" type="text" placeholder="Write your task..." />
+
+    <button type="button" onclick="addOrEdit()" id="sendBtn">Send</button>
+    <button type="button" onclick="cancelEdit()" id="cancelBtn" style="display:none;">
+      Cancel
+    </button>
+  </div>
+
+  <hr />
+
+  <!-- Filter -->
+  <label for="mySelect">Show:</label>
+  <select onchange="renderTasks()" id="mySelect">
+    <option value="all">All</option>
+    <option value="todo">Not Done</option>
+    <option value="done">Done</option>
+  </select>
+
+  <hr />
+
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>Done</th>
+        <th>Text</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+
+    <tbody id="myTable"></tbody>
+  </table>
+
+  <p id="msg" style="margin-top:12px;"></p>
+
+  <script src="../scripts/script.js"></script>
 </body>
 </html>
+

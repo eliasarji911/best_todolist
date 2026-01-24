@@ -1,69 +1,71 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const {addUser,getByUserName,getByEmail} = require('../model/users_M');
+const db = require("../config/db_config");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-async function register(req,res) {
-    try{
-        let name = req.body.name;
-        let email = req.body.email;
-        let userName = req.body.userName;
-        let pass = req.pass;
+function createToken(userId) {
+  return jwt.sign({ id: userId }, process.env.SECRET_KEY, { expiresIn: "2h" });
+}
 
-        let user = await getByUserName(userName);
-        if(user){
-            return res.status(409).json({message:"שם משתמש קיים במערכת"});
-        }
-        user = await getByEmail(email);
-        if(user){
-            return res.status(409).json({message:"אימייל קיים במערכת"});
-        }
+// REGISTER
+const register = (req, res) => {
+  const { name, email, userName, pass } = req.body;
 
-        let userId = await addUser({name,email,userName,pass});
-        if(!userId){
-            return res.status(500).json({message:"Server error"});
-        }
-        res.status(201).json({message:"נוסף בהצלחה"});
-    }catch(err){
-        console.error(err);
-        res.status(500).json({message:"Server error"});
+  if (!name || !email || !userName || !pass) {
+    return res.status(400).json({ msg: "❌ Missing fields" });
+  }
+
+  const hashed = bcrypt.hashSync(pass, 10);
+
+  const sql =
+    "INSERT INTO users (name, email, userName, pass) VALUES (?, ?, ?, ?)";
+
+  db.query(sql, [name, email, userName, hashed], (err, result) => {
+    if (err) {
+      return res.status(500).json({ msg: "❌ Register failed", err: err.message });
     }
-}
 
-async function login(req,res,next) {
-    try{
-        let user = await getByUserName(req.body.userName);
-        if(!user){
-            return res.status(400).json({message:"שם משתמש או סיסמה שגויים"});
-        }
-        let isMatch = await bcrypt.compare(req.body.pass,user.pass);
-        if(!isMatch){
-            return res.status(400).json({message:"שם משתמש או סיסמה שגויים"});
-        }
-        req.user = user;
-        next();
-    }catch(err){
-        console.error(err);
-        res.status(500).json({message:"Server error"});
+    return res.status(201).json({ msg: "✅ Registered successfully" });
+  });
+};
+
+// LOGIN
+const login = (req, res) => {
+  const { userName, pass } = req.body;
+
+  if (!userName || !pass) {
+    return res.status(400).json({ msg: "❌ Missing fields" });
+  }
+
+  const sql = "SELECT * FROM users WHERE userName = ?";
+  db.query(sql, [userName], (err, rows) => {
+    if (err) return res.status(500).json({ msg: "❌ Login error" });
+
+    if (rows.length === 0) {
+      return res.status(401).json({ msg: "❌ User not found" });
     }
-}
 
-function createJwt(req,res) {
-    try{
-        let user = req.user;
-        let token = jwt.sign(
-            {id:user.id,name:user.name},
-            process.env.SECRET_KEY,
-            {expiresIn:'3h'}
-        );
-        res.cookie('jwt',token,{httpOnly:true,maxAge:1000*60*60*3}).status(200).json({message:"התחברת בהצלחה",name:user.name});
-    }catch(err){
-        console.error(err);
-        res.status(500).json({message:"Server error"});
+    const user = rows[0];
+    const ok = bcrypt.compareSync(pass, user.pass);
+
+    if (!ok) {
+      return res.status(401).json({ msg: "❌ Wrong password" });
     }
-}
 
-module.exports ={
-    register,
-    login,
-    createJwt
-}
+    const token = createToken(user.id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax"
+    });
+
+    return res.json({ msg: "✅ Login success" });
+  });
+};
+
+// LOGOUT
+const logout = (req, res) => {
+  res.clearCookie("token");
+  res.json({ msg: "✅ Logged out" });
+};
+
+module.exports = { register, login, logout };
