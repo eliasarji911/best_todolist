@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Users CRUD</title>
+  <link rel="stylesheet" href="../styles/styles.css" />
+</head>
+
+<body>
+  <h1>Users CRUD</h1>
+  <a href="/">Back Home</a>
+  <hr />
+
+  <div>
+    <input id="userId" type="hidden" />
+
+    <label for="name">Name:</label>
+    <input id="name" type="text" placeholder="Name..." />
+
+    <label for="email">Email:</label>
+    <input id="email" type="text" placeholder="Email..." />
+
+    <label for="userName">Username:</label>
+    <input id="userName" type="text" placeholder="Username..." />
+
+    <button type="button" onclick="updateUser()" id="userUpdateBtn">Update</button>
+    <button type="button" onclick="cancelUserEdit()" id="userCancelBtn" style="display:none;">Cancel</button>
+  </div>
+
+  <p style="font-size: 14px; opacity: 0.8; margin-top: 6px;">
+    * Users are created from the Register page. Here you can Update/Delete.
+  </p>
+
+  <hr />
+
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Username</th>
+        <th>Created</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody id="usersTable"></tbody>
+  </table>
+
+  <p id="msg" style="margin-top:12px;"></p>
+
+  <script src="../scripts/users_scripts.js"></script>
+</body>
+</html>
+

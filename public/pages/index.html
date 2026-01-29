@@ -10,12 +10,18 @@
 <body>
   <h1 id="greating">My Tasks</h1>
 
-  <a href="/cat">All categories</a>
+  <!-- ✅ Teacher requirement: 2 links on the main page -->
+  <a href="/usersPage">Users CRUD</a>
+  &nbsp;|&nbsp;
+  <a href="/cat">Categories CRUD</a>
+
   <hr />
 
-  <!-- Add / Edit -->
   <div>
     <input id="id" type="hidden" />
+
+    <label for="categorySelect">Category:</label>
+    <select id="categorySelect"></select>
 
     <label for="text">Text:</label>
     <input id="text" type="text" placeholder="Write your task..." />
@@ -28,7 +34,6 @@
 
   <hr />
 
-  <!-- Filter -->
   <label for="mySelect">Show:</label>
   <select onchange="renderTasks()" id="mySelect">
     <option value="all">All</option>
@@ -42,6 +47,7 @@
     <thead>
       <tr>
         <th>Done</th>
+        <th>Category</th>
         <th>Text</th>
         <th>Edit</th>
         <th>Delete</th>
@@ -56,4 +62,6 @@
   <script src="../scripts/script.js"></script>
 </body>
 </html>
+
+
 
