@@ -6,7 +6,7 @@ function createToken(userId) {
   return jwt.sign({ id: userId }, process.env.SECRET_KEY, { expiresIn: "2h" });
 }
 
-// REGISTER
+
 const register = (req, res) => {
   const { name, email, userName, pass } = req.body;
 
@@ -28,7 +28,7 @@ const register = (req, res) => {
   });
 };
 
-// LOGIN
+
 const login = (req, res) => {
   const { userName, pass } = req.body;
 
@@ -62,7 +62,7 @@ const login = (req, res) => {
   });
 };
 
-// LOGOUT
+
 const logout = (req, res) => {
   res.clearCookie("token");
   res.json({ msg: "✅ Logged out" });

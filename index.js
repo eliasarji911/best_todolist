@@ -5,18 +5,18 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 const jwt = require("jsonwebtoken");
 
-require("./config/db_config"); // DB connect
+require("./config/db_config"); 
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Serve only scripts + styles as static
+
 app.use("/styles", express.static(path.join(__dirname, "public/styles")));
 app.use("/scripts", express.static(path.join(__dirname, "public/scripts")));
 
-// ✅ Protect /pages/* (except login + register pages)
+
 function protectPages(req, res, next) {
   const openPages = ["/login.html", "/reg.html"];
   if (openPages.includes(req.path)) return next();
@@ -35,12 +35,12 @@ function protectPages(req, res, next) {
 
 app.use("/pages", protectPages, express.static(path.join(__dirname, "public/pages")));
 
-// ✅ test route
+
 app.get("/test", (req, res) => {
   res.send("✅ SERVER WORKING");
 });
 
-// ✅ pages shortcuts
+
 app.get("/", (req, res) => {
   res.redirect("/pages/index.html");
 });
@@ -57,7 +57,7 @@ app.get("/cat", (req, res) => {
   res.redirect("/pages/categories.html");
 });
 
-// ✅ Support direct /users.html & /categories.html links
+
 app.get("/users.html", (req, res) => {
   res.redirect("/pages/users.html");
 });
@@ -70,7 +70,7 @@ app.get("/usersPage", (req, res) => {
   res.redirect("/pages/users.html");
 });
 
-// ✅ API routes
+
 app.use("/auth", require("./routes/auth_R"));
 app.use("/users", require("./routes/users_R"));
 app.use("/categories", require("./routes/categories_R"));

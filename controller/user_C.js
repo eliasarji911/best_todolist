@@ -1,6 +1,6 @@
 const db = require("../config/db_config");
 
-// ✅ GET /users  (protected by isLoggedIn in your routes)
+
 const getAllUsers = (req, res) => {
   const sql = "SELECT id, name, email, userName, created_at FROM users";
 
@@ -16,7 +16,7 @@ const getAllUsers = (req, res) => {
   });
 };
 
-// ✅ GET /users/:id
+
 const getOneUser = (req, res) => {
   const { id } = req.params;
 
@@ -38,7 +38,7 @@ const getOneUser = (req, res) => {
   });
 };
 
-// ✅ DELETE /users/:id
+
 const deleteUser = (req, res) => {
   const { id } = req.params;
 
@@ -60,11 +60,11 @@ const deleteUser = (req, res) => {
   });
 };
 
-// ✅ PATCH /users/:id
+
 const updateUser = (req, res) => {
   const { id } = req.params;
 
-  // valuesToEdit middleware should already filter allowed fields
+
   const allowedFields = ["name", "email", "userName"];
   const updates = [];
   const values = [];

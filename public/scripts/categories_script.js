@@ -21,7 +21,7 @@ async function apiFetch(url, options = {}) {
   options.credentials = "include";
   const res = await fetch(url, options);
   if (res.status === 401) {
-    // ✅ Teacher requirement: if not logged in -> go to login
+
     location.href = "/login";
     throw new Error("Not logged in");
   }
@@ -87,7 +87,7 @@ async function addOrUpdateCategory() {
   }
 
   try {
-    // ✅ UPDATE
+  
     if (id) {
       const res = await apiFetch(`/categories/${id}`, {
         method: "PATCH",
@@ -106,7 +106,7 @@ async function addOrUpdateCategory() {
       return;
     }
 
-    // ✅ ADD
+   
     const res = await apiFetch("/categories", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -128,7 +128,6 @@ async function addOrUpdateCategory() {
 }
 
 async function deleteCategory(id) {
-  // ✅ Teacher requirement: warn user that tasks will be deleted too
   const ok = confirm(
     "Deleting this category will also delete ALL tasks inside it. Continue?"
   );

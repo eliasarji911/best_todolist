@@ -11,7 +11,6 @@ function parseId(req, res, next) {
   next();
 }
 
-// ✅ GET all tasks (for logged user) + category name
 router.get("/", isLoggedIn, (req, res) => {
   db.query(
     `SELECT t.*, c.name AS category_name
@@ -27,7 +26,7 @@ router.get("/", isLoggedIn, (req, res) => {
   );
 });
 
-// ✅ ADD task
+
 router.post("/", isLoggedIn, (req, res) => {
   const { text, category_id } = req.body;
   if (!text) return res.status(400).json({ msg: "❌ Missing text" });
@@ -47,7 +46,7 @@ router.post("/", isLoggedIn, (req, res) => {
   );
 });
 
-// ✅ UPDATE task (support PUT + PATCH)
+
 function updateTask(req, res) {
   const { text, category_id } = req.body;
   if (!text) return res.status(400).json({ msg: "❌ Missing text" });
@@ -71,7 +70,7 @@ function updateTask(req, res) {
 router.put("/:id", isLoggedIn, parseId, updateTask);
 router.patch("/:id", isLoggedIn, parseId, updateTask);
 
-// ✅ DONE toggle (support PATCH + PUT)  <-- THIS fixes your 404
+
 function setDone(req, res) {
   const { is_done } = req.body;
   if (is_done === undefined) return res.status(400).json({ msg: "❌ Missing is_done" });
@@ -90,11 +89,11 @@ function setDone(req, res) {
 router.patch("/:id/done", isLoggedIn, parseId, setDone);
 router.put("/:id/done", isLoggedIn, parseId, setDone);
 
-// ✅ EXTRA fallback (if your frontend ever calls /tasks/done/5)
+
 router.patch("/done/:id", isLoggedIn, parseId, setDone);
 router.put("/done/:id", isLoggedIn, parseId, setDone);
 
-// ✅ DELETE task
+
 router.delete("/:id", isLoggedIn, parseId, (req, res) => {
   db.query(
     "DELETE FROM tasks WHERE id = ? AND user_id = ?",

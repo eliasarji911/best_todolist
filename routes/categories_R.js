@@ -13,7 +13,7 @@ function parseId(req, res, next) {
   next();
 }
 
-// ✅ GET all categories for logged user
+
 router.get("/", isLoggedIn, (req, res) => {
   db.query(
     "SELECT * FROM categories WHERE user_id = ? ORDER BY id DESC",
@@ -25,7 +25,7 @@ router.get("/", isLoggedIn, (req, res) => {
   );
 });
 
-// ✅ GET one category
+
 router.get("/:id", isLoggedIn, parseId, (req, res) => {
   db.query(
     "SELECT * FROM categories WHERE id = ? AND user_id = ?",
@@ -38,7 +38,7 @@ router.get("/:id", isLoggedIn, parseId, (req, res) => {
   );
 });
 
-// ✅ ADD category
+
 router.post("/", isLoggedIn, (req, res) => {
   const { name } = req.body;
   if (!name) return res.status(400).json({ msg: "❌ Missing name" });
@@ -53,7 +53,7 @@ router.post("/", isLoggedIn, (req, res) => {
   );
 });
 
-// ✅ UPDATE category name
+
 router.patch("/:id", isLoggedIn, parseId, (req, res) => {
   const { name } = req.body;
   if (!name) return res.status(400).json({ msg: "❌ Missing name" });
@@ -69,16 +69,16 @@ router.patch("/:id", isLoggedIn, parseId, (req, res) => {
   );
 });
 
-// ✅ DELETE category + all tasks inside it
+
 router.delete("/:id", isLoggedIn, parseId, (req, res) => {
-  // 1) delete tasks in this category (only for this user)
+ 
   db.query(
     "DELETE FROM tasks WHERE category_id = ? AND user_id = ?",
     [req.categoryId, req.userId],
     (err) => {
       if (err) return res.status(500).json({ msg: "❌ DB error deleting tasks" });
 
-      // 2) delete the category
+   
       db.query(
         "DELETE FROM categories WHERE id = ? AND user_id = ?",
         [req.categoryId, req.userId],

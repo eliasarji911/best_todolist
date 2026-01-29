@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-// ✅ redirect to static HTML pages in /public/pages
+
 router.get("/", (req, res) => {
   res.redirect("/pages/index.html");
 });

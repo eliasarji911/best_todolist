@@ -1,5 +1,5 @@
-let allTasks = []; // cache
-let allCategories = []; // cache
+let allTasks = [];
+let allCategories = [];
 
 function showMsg(text, ok = true) {
   const p = document.getElementById("msg");
@@ -28,6 +28,7 @@ async function apiFetch(url, options = {}) {
   return res;
 }
 
+
 function fillCategorySelect(selectedId = "") {
   const sel = document.getElementById("categorySelect");
   if (!sel) return;
@@ -55,10 +56,9 @@ function getCategoryNameById(catId) {
   return found ? found.name : "";
 }
 
-// GET categories for dropdown
 async function loadCategories() {
   try {
-    const res = await apiFetch("/categories", { method: "GET" });
+    const res = await apiFetch("/categories");
     if (!res.ok) {
       showMsg("❌ Failed to load categories", false);
       return;
@@ -70,16 +70,14 @@ async function loadCategories() {
   }
 }
 
-// GET tasks
+
 async function loadTasks() {
   try {
-    const res = await apiFetch("/tasks", { method: "GET" });
-
+    const res = await apiFetch("/tasks");
     if (!res.ok) {
       showMsg("❌ Failed to load tasks", false);
       return;
     }
-
     allTasks = await res.json();
     renderTasks();
   } catch (err) {
@@ -87,7 +85,6 @@ async function loadTasks() {
   }
 }
 
-// Render tasks table with filter (all/todo/done)
 function renderTasks() {
   const tbody = document.getElementById("myTable");
   const filter = document.getElementById("mySelect").value;
@@ -96,11 +93,8 @@ function renderTasks() {
 
   let tasksToShow = allTasks;
 
-  if (filter === "done") {
-    tasksToShow = allTasks.filter((t) => t.is_done == 1);
-  } else if (filter === "todo") {
-    tasksToShow = allTasks.filter((t) => t.is_done == 0);
-  }
+  if (filter === "done") tasksToShow = allTasks.filter((t) => t.is_done == 1);
+  if (filter === "todo") tasksToShow = allTasks.filter((t) => t.is_done == 0);
 
   if (tasksToShow.length === 0) {
     tbody.innerHTML = `
@@ -124,7 +118,7 @@ function renderTasks() {
 
     const catName = t.category_name ?? getCategoryNameById(catId) ?? "";
 
-    // IMPORTANT: escape text for attribute quotes
+   
     const safeText = escapeHtml(t.text).replaceAll("&#039;", "\\'");
 
     tr.innerHTML = `
@@ -151,7 +145,6 @@ function renderTasks() {
   }
 }
 
-// Add OR Edit task (also category)
 async function addOrEdit() {
   const idInput = document.getElementById("id");
   const textInput = document.getElementById("text");
@@ -172,7 +165,7 @@ async function addOrEdit() {
   };
 
   try {
-    // EDIT
+   
     if (id) {
       const res = await apiFetch(`/tasks/${id}`, {
         method: "PUT",
@@ -180,8 +173,8 @@ async function addOrEdit() {
         body: JSON.stringify(body),
       });
 
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
         showMsg(data.msg || "❌ Failed to update task", false);
         return;
       }
@@ -192,15 +185,15 @@ async function addOrEdit() {
       return;
     }
 
-    // ADD
+   
     const res = await apiFetch("/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
 
+    const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
       showMsg(data.msg || "❌ Failed to add task", false);
       return;
     }
@@ -215,15 +208,14 @@ async function addOrEdit() {
   }
 }
 
-// Delete task
 async function deleteTask(id) {
   if (!confirm("Delete this task?")) return;
 
   try {
     const res = await apiFetch(`/tasks/${id}`, { method: "DELETE" });
+    const data = await res.json().catch(() => ({}));
 
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
       showMsg(data.msg || "❌ Failed to delete task", false);
       return;
     }
@@ -236,7 +228,6 @@ async function deleteTask(id) {
   }
 }
 
-// Done / Not Done
 async function setDone(id, checked) {
   try {
     const res = await apiFetch(`/tasks/${id}/done`, {
@@ -245,8 +236,8 @@ async function setDone(id, checked) {
       body: JSON.stringify({ is_done: checked ? 1 : 0 }),
     });
 
+    const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
       showMsg(data.msg || "❌ Failed to update done status", false);
       return;
     }
@@ -258,7 +249,6 @@ async function setDone(id, checked) {
   }
 }
 
-// Start Edit mode
 function startEdit(id, catId, text) {
   document.getElementById("id").value = id;
   document.getElementById("text").value = text;
@@ -269,7 +259,6 @@ function startEdit(id, catId, text) {
   document.getElementById("cancelBtn").style.display = "inline-block";
 }
 
-// Cancel edit mode
 function cancelEdit() {
   document.getElementById("id").value = "";
   document.getElementById("text").value = "";
@@ -284,6 +273,7 @@ window.onload = async () => {
   await loadCategories();
   await loadTasks();
 };
+
 
 
 

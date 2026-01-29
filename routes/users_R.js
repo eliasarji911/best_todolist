@@ -5,10 +5,10 @@ const { isValidId, valuesToEdit } = require("../middelware/users_MID");
 
 const router = express.Router();
 
-// ✅ Teacher requirement: ALL routes must be protected by login
+
 router.use(isLoggedIn);
 
-// ✅ GET all users
+
 router.get("/", (req, res) => {
   db.query(
     "SELECT id, name, email, userName FROM users ORDER BY id DESC",
@@ -19,7 +19,6 @@ router.get("/", (req, res) => {
   );
 });
 
-// ✅ GET one user
 router.get("/:id", isValidId, (req, res) => {
   db.query(
     "SELECT id, name, email, userName FROM users WHERE id = ?",
@@ -32,7 +31,7 @@ router.get("/:id", isValidId, (req, res) => {
   );
 });
 
-// ✅ DELETE user
+
 router.delete("/:id", isValidId, (req, res) => {
   db.query("DELETE FROM users WHERE id = ?", [req.id], (err, result) => {
     if (err) return res.status(500).json({ msg: "❌ DB error" });
@@ -41,7 +40,7 @@ router.delete("/:id", isValidId, (req, res) => {
   });
 });
 
-// ✅ UPDATE user (name/email/userName)
+
 router.patch("/:id", isValidId, valuesToEdit, (req, res) => {
   const keys = Object.keys(req.user);
   const values = Object.values(req.user);
