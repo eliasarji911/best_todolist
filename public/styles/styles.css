@@ -333,5 +333,14 @@ body::before{
   animation: bgFloat 14s ease-in-out infinite;
 }
 
+@keyframes bgFloat{
+  0%   { transform: translate(-1.2%, -0.8%) scale(1); }
+  50%  { transform: translate( 1.2%,  0.9%) scale(1.02); }
+  100% { transform: translate(-1.2%, -0.8%) scale(1); }
+}
+@media (prefers-reduced-motion: reduce){
+  body::before{ animation: none; }
+}
+
 
 
