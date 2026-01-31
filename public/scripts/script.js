@@ -29,18 +29,23 @@ async function apiFetch(url, options = {}) {
 }
 
 async function loadHello() {
+  const el = document.getElementById("helloName");
+  if (!el) return;
+
   try {
-    const res = await apiFetch("/auth/me");
-    if (!res.ok) return;
+    const res = await fetch("/auth/me", { credentials: "include" });
 
-    const data = await res.json().catch(() => ({}));
-    const el = document.getElementById("helloName");
-    if (!el) return;
+    if (!res.ok) {
+      el.textContent = "";
+      return;
+    }
 
+    const data = await res.json();
     const name = (data.name || data.userName || "").trim();
     el.textContent = name ? `Hi ${name} 👋` : "";
   } catch (err) {
     console.log(err);
+    el.textContent = "";
   }
 }
 

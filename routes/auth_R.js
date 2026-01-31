@@ -15,6 +15,27 @@ router.post("/logout", (req, res) => {
   });
 });
 
+router.get("/me", (req, res) => {
+  if (!req.session || !req.session.userId) {
+    return res.status(401).json({ msg: "❌ Not logged in" });
+  }
+
+  db.query(
+    "SELECT username, name FROM users WHERE user_id = ?",
+    [req.session.userId],
+    (err, rows) => {
+      if (err) return res.status(500).json({ msg: "❌ DB error" });
+      if (!rows.length) return res.status(404).json({ msg: "❌ User not found" });
+
+      res.json({
+        userName: rows[0].username,
+        name: rows[0].name
+      });
+    }
+  );
+});
+
+
 
 module.exports = router;
 
