@@ -1,4 +1,6 @@
 const express = require("express");
+const { isLoggedIn } = require("../middelware/auth_MID");
+
 const { register, login, logout } = require("../controller/auth_C");
 
 const router = express.Router();
