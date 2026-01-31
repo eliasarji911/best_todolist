@@ -28,6 +28,22 @@ async function apiFetch(url, options = {}) {
   return res;
 }
 
+async function loadHello() {
+  try {
+    const res = await apiFetch("/auth/me");
+    if (!res.ok) return;
+
+    const data = await res.json().catch(() => ({}));
+    const el = document.getElementById("helloName");
+    if (!el) return;
+
+    const name = (data.name || data.userName || "").trim();
+    el.textContent = name ? `Hi ${name} 👋` : "";
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 
 function fillCategorySelect(selectedId = "") {
   const sel = document.getElementById("categorySelect");
@@ -270,6 +286,7 @@ function cancelEdit() {
 }
 
 window.onload = async () => {
+  await loadHello();
   await loadCategories();
   await loadTasks();
 };

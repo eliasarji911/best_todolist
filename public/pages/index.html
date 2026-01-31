@@ -9,9 +9,9 @@
 
 <body>
   <h1 id="greating">My Tasks</h1>
-
+   
   <button type="button" onclick="logout()" style="margin-left:10px;">Sign out</button>
-
+   <p id="helloName" style="margin:0 auto 12px; padding:0 10px;"></p>
 
   <a href="/usersPage">Users CRUD</a>
   &nbsp;|&nbsp;
@@ -63,14 +63,17 @@
   <p id="msg" style="margin-top:12px;"></p>
 
   <script src="../scripts/script.js"></script>
-</body>
 
 <script>
   async function logout() {
-    const res = await fetch("/auth/logout", { method: "POST" });
+    const res = await fetch("/auth/logout", { method: "POST", credentials: "include" });
     if (res.ok) location.href = "/login";
   }
 </script>
+
+</body>
+
+
 
 
 </html>
