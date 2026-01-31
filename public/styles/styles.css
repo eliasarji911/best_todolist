@@ -183,7 +183,7 @@ body > div input[type="hidden"]{ display:none; }
   flex: 1 1 320px;
   min-width: 200px;
 }
-#catName, #catTable, #catId{ }
+
 #catName, #name, #email, #userName, #pass{
   flex: 1 1 240px;
   min-width: 180px;
