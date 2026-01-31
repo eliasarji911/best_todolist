@@ -10,6 +10,9 @@
 <body>
   <h1 id="greating">My Tasks</h1>
 
+  <button type="button" onclick="logout()" style="margin-left:10px;">Sign out</button>
+
+
   <a href="/usersPage">Users CRUD</a>
   &nbsp;|&nbsp;
   <a href="/cat">Categories CRUD</a>
@@ -61,6 +64,15 @@
 
   <script src="../scripts/script.js"></script>
 </body>
+
+<script>
+  async function logout() {
+    const res = await fetch("/auth/logout", { method: "POST" });
+    if (res.ok) location.href = "/login";
+  }
+</script>
+
+
 </html>
 
 

@@ -7,6 +7,13 @@ router.post("/register", register);
 router.post("/login", login);
 router.post("/logout", logout);
 
+router.post("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.json({ msg: "✅ Logged out" });
+  });
+});
+
+
 module.exports = router;
 
 
